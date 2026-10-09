@@ -316,7 +316,7 @@ function resolveOrderExpiryMs(
 
 export interface OrderCreationContext {
 	apiKeyId?: string;
-	apiProtocol?: "gmpay" | "epay";
+	apiProtocol?: "gmpay" | "epay" | "dhru";
 }
 
 async function quotePaymentAmount(

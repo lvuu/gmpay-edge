@@ -393,6 +393,8 @@
 	"settings_checkout_amount_decimals_description": "可设置 2–8 位，默认 4 位；应付金额向上对齐，金额冲突也按相同的可见步长递增",
 	"settings_allowed_hosts": "Allowed Hosts",
 	"settings_allowed_hosts_description": "本实例接受的部署和自定义主机；每行填写一个，不要包含 http://、https:// 或路径，可选端口",
+	"settings_dhru_ipn_hosts": "Dhru 回调主机",
+	"settings_dhru_ipn_hosts_description": "允许接收付款通知的 Dhru Fusion 商店主机名。每行填写一个公开主机名，不含协议、端口或路径。留空时禁止创建 Dhru 订单。",
 	"settings_webhook_attempts": "Webhook 最大尝试次数",
 	"settings_webhook_attempts_description": "包含首次投递",
 	"settings_webhook_timeout": "Webhook 超时时间",

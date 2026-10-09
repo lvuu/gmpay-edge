@@ -342,6 +342,7 @@ bun run build:bun
 | 部署与生产签收 | [部署检查清单](docs/zh-CN/DEPLOYMENT.md) |
 | Bun 备份、恢复与 Cloudflare 迁入 | [Bun 数据运维](docs/zh-CN/NODE_DATA_OPERATIONS.md) |
 | 商户请求、签名、错误和 EPay | [商户 API](docs/zh-CN/MERCHANT_API.md) |
+| Dhru Fusion Pro Custom 网关 | [Dhru Fusion Pro](docs/zh-CN/DHRU_FUSION_PRO.md) |
 | Provider 配置与收款方式 | [支付方式](docs/zh-CN/PAYMENT_METHODS.md) |
 | 入站端点与商户投递 | [Webhook](docs/zh-CN/WEBHOOKS.md) |
 | Bot、Inline 下单、指令与订阅 | [Telegram](docs/zh-CN/TELEGRAM.md) |

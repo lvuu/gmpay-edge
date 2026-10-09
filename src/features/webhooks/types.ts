@@ -65,15 +65,14 @@ type WebhookDeliveryBase = {
 	eventId: string;
 	attempt: number;
 	url: string;
-	secret: string;
 	payload: WebhookJsonObject;
-	protocol: "gmpay" | "epay";
 };
 
 export type WebhookDeliveryRequest = WebhookDeliveryBase &
 	(
-		| { protocol: "gmpay"; gmpay: GmpayCallbackData }
-		| { protocol: "epay"; epay: EpayCallbackData }
+		| { protocol: "gmpay"; secret: string; gmpay: GmpayCallbackData }
+		| { protocol: "epay"; secret: string; epay: EpayCallbackData }
+		| { protocol: "dhru"; dhruOrderId: number }
 	);
 
 interface EpayCallbackData extends Record<string, string> {

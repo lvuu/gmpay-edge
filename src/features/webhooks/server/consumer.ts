@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { toGmpayStatus } from "#/features/orders/gmpay-status";
 import { orderStatuses } from "#/features/orders/schema";
+import { isAllowedDhruIpnUrl } from "#/features/orders/server/dhru-api";
+import { settledDhruTransaction } from "#/features/orders/server/dhru-settlement";
 import type { WebhookDeliveryResult } from "#/features/webhooks/server/delivery";
 import {
 	deliverWebhook,
@@ -295,8 +297,8 @@ async function resolveWebhookDelivery(
 ) {
 	const row = await db
 		.prepare(
-			`SELECT e.payload, o.notify_url AS url, o.api_protocol,
-			 o.id AS order_id, o.external_order_id,
+			`SELECT e.payload, o.notify_url AS url, o.api_protocol, dh.id AS dhru_order_id,
+			 o.id AS order_id, o.external_order_id, o.status AS order_status,
 			 o.description, o.metadata,
 			 k.pid, k.secret_encrypted,
 			 COALESCE(ops.target_value, '') AS receive_address
@@ -304,6 +306,7 @@ async function resolveWebhookDelivery(
 			 JOIN webhook_events e ON e.id = d.event_id
 			 JOIN orders o ON o.id = d.order_id
 			 JOIN api_keys k ON k.id = d.api_key_id
+			 LEFT JOIN dhru_orders dh ON dh.gmpay_order_id = o.id
 			 LEFT JOIN order_payment_snapshots ops ON ops.order_id = o.id
 			 WHERE d.id = ? AND e.id = ? LIMIT 1`,
 		)
@@ -311,8 +314,10 @@ async function resolveWebhookDelivery(
 		.first<{
 			payload: string;
 			url: string;
-			api_protocol: "gmpay" | "epay" | null;
+			api_protocol: "gmpay" | "epay" | "dhru" | null;
+			dhru_order_id: number | null;
 			order_id: string;
+			order_status: string;
 			external_order_id: string;
 			description: string | null;
 			metadata: string | null;
@@ -334,22 +339,44 @@ async function resolveWebhookDelivery(
 		throw new WebhookConfigurationError(
 			"Webhook delivery URL is not a public HTTPS endpoint",
 		);
+	let payload: WebhookJsonObject;
+	let snapshot: z.infer<typeof callbackSnapshotSchema>;
+	try {
+		payload = webhookJsonObjectSchema.parse(JSON.parse(row.payload));
+		snapshot = callbackSnapshotSchema.parse(payload);
+	} catch {
+		throw new WebhookConfigurationError("Webhook payload is unreadable");
+	}
+	if (row.api_protocol === "dhru") {
+		if (
+			!row.dhru_order_id ||
+			!Number.isSafeInteger(row.dhru_order_id) ||
+			!(await settledDhruTransaction(db, row.order_id)) ||
+			!(row.order_status === "paid" || row.order_status === "overpaid") ||
+			!(["paid", "overpaid"] as string[]).includes(snapshot.status) ||
+			!(await isAllowedDhruIpnUrl(db, row.url))
+		)
+			throw new WebhookConfigurationError(
+				"Dhru payment or IPN host is not confirmed",
+			);
+		return {
+			...message,
+			url: row.url,
+			payload,
+			protocol: "dhru" as const,
+			dhruOrderId: row.dhru_order_id,
+		};
+	}
 	const runtime = sharedRuntime ?? (await loadRuntimeConfig(db));
 	if (!runtime.apiKeyPepper)
 		throw new WebhookConfigurationError(
 			"Webhook signing secret is unavailable",
 		);
-	let payload: WebhookJsonObject;
-	let snapshot: z.infer<typeof callbackSnapshotSchema>;
 	let secret: string;
 	try {
-		payload = webhookJsonObjectSchema.parse(JSON.parse(row.payload));
-		snapshot = callbackSnapshotSchema.parse(payload);
 		secret = await decryptSecret(row.secret_encrypted, runtime.apiKeyPepper);
 	} catch {
-		throw new WebhookConfigurationError(
-			"Webhook payload or signing secret is unreadable",
-		);
+		throw new WebhookConfigurationError("Webhook signing secret is unreadable");
 	}
 	const transaction = webhookJsonObjectSchema.safeParse(payload.transaction);
 	const metadata = parseMetadata(row.metadata);

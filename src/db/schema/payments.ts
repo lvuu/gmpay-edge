@@ -228,7 +228,7 @@ export const orders = sqliteTable(
 		id: text("id").primaryKey(),
 		externalOrderId: text("external_order_id").notNull(),
 		apiKeyId: text("api_key_id").references(() => apiKeys.id),
-		apiProtocol: text("api_protocol", { enum: ["gmpay", "epay"] }),
+		apiProtocol: text("api_protocol", { enum: ["gmpay", "epay", "dhru"] }),
 		status: text("status", {
 			enum: [
 				"pending",
@@ -288,6 +288,15 @@ export const orders = sqliteTable(
 		uniqueIndex("orders_provider_order_uidx").on(table.providerOrderId),
 	],
 );
+
+/** Numeric gateway IDs keep the Dhru contract independent of GMPay's 20-digit IDs. */
+export const dhruOrders = sqliteTable("dhru_orders", {
+	id: integer("id").primaryKey({ autoIncrement: true }),
+	gmpayOrderId: text("gmpay_order_id")
+		.notNull()
+		.unique()
+		.references(() => orders.id, { onDelete: "cascade" }),
+});
 
 export const receivingMethodLocks = sqliteTable(
 	"receiving_method_locks",

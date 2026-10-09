@@ -393,6 +393,8 @@
   "settings_checkout_amount_decimals_description": "От 2 до 8 знаков, по умолчанию 4. Сумма округляется вверх; при конфликтах используется тот же видимый шаг",
   "settings_allowed_hosts": "Разрешенные хосты",
   "settings_allowed_hosts_description": "Развертываемые и пользовательские хосты, принятые этим экземпляром. Введите по одному хосту в каждой строке без http://, https:// или пути; порты не являются обязательными",
+  "settings_dhru_ipn_hosts": "Хосты уведомлений Dhru",
+  "settings_dhru_ipn_hosts_description": "Укажите точные публичные имена хостов магазина Dhru Fusion для уведомлений об оплате: по одному в строке, без схемы, порта и пути. Пустой список запрещает создание заказов Dhru.",
   "settings_webhook_attempts": "Максимальное количество попыток вебхука",
   "settings_webhook_attempts_description": "Включает первоначальную попытку доставки",
   "settings_webhook_timeout": "Тайм-аут вебхука",

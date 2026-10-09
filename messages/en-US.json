@@ -393,6 +393,8 @@
 	"settings_checkout_amount_decimals_description": "2–8 decimals, default 4. Payable amounts round up and collisions use the same visible step",
 	"settings_allowed_hosts": "Allowed Hosts",
 	"settings_allowed_hosts_description": "Deployment and custom hosts accepted by this instance. Enter one host per line without http://, https://, or a path; ports are optional",
+	"settings_dhru_ipn_hosts": "Dhru callback hosts",
+	"settings_dhru_ipn_hosts_description": "Exact Dhru Fusion store hostnames allowed for payment notifications. Enter one public hostname per line, without a scheme, port, or path. Leave empty to disable Dhru order creation.",
 	"settings_webhook_attempts": "Maximum webhook attempts",
 	"settings_webhook_attempts_description": "Includes the initial delivery attempt",
 	"settings_webhook_timeout": "Webhook timeout",

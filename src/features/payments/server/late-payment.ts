@@ -92,7 +92,11 @@ export async function resolveLatePayment(
 				confirmations: row.confirmations,
 			},
 		};
-		const endpoints = await matchingWebhookEndpoints(env.DB, row.order_id);
+		const endpoints = await matchingWebhookEndpoints(
+			env.DB,
+			row.order_id,
+			eventType,
+		);
 		const deliveries = endpoints.map((endpoint) => ({
 			id: crypto.randomUUID(),
 			endpoint,
@@ -190,7 +194,11 @@ export async function resolveLatePayment(
 			confirmations: row.confirmations,
 		},
 	};
-	const endpoints = await matchingWebhookEndpoints(env.DB, row.order_id);
+	const endpoints = await matchingWebhookEndpoints(
+		env.DB,
+		row.order_id,
+		eventType,
+	);
 	const deliveries = endpoints.map((endpoint) => ({
 		id: crypto.randomUUID(),
 		endpoint,

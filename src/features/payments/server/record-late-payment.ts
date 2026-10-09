@@ -73,7 +73,7 @@ export async function recordLatePayment(
 			confirmations: transaction.confirmations,
 		},
 	};
-	const endpoints = await matchingWebhookEndpoints(db, order.id);
+	const endpoints = await matchingWebhookEndpoints(db, order.id, eventType);
 	const deliveries = endpoints.map((endpoint) => ({
 		id: crypto.randomUUID(),
 		endpoint,

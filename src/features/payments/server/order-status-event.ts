@@ -83,7 +83,7 @@ export async function prepareOrderStatusEvent(
 		},
 		transaction: null,
 	};
-	const endpoints = await matchingWebhookEndpoints(env.DB, orderId);
+	const endpoints = await matchingWebhookEndpoints(env.DB, orderId, eventType);
 	const deliveries = endpoints.map((endpoint) => ({
 		id: crypto.randomUUID(),
 		endpoint,

@@ -393,6 +393,8 @@
   "settings_checkout_amount_decimals_description": "2~8자리, 기본값은 4자리입니다. 지불 금액을 올림하고 금액 충돌에도 동일한 표시 단위를 사용합니다",
   "settings_allowed_hosts": "허용된 호스트",
   "settings_allowed_hosts_description": "이 인스턴스에서 허용되는 배포 및 사용자 지정 호스트입니다. http://, https:// 또는 경로 없이 호스트를 한 줄에 하나씩 입력하세요. 포트는 선택 사항입니다",
+  "settings_dhru_ipn_hosts": "Dhru 콜백 호스트",
+  "settings_dhru_ipn_hosts_description": "결제 알림을 허용할 Dhru Fusion 스토어의 정확한 공개 호스트 이름을 한 줄에 하나씩 입력하세요. 스킴, 포트, 경로는 제외합니다. 비워 두면 Dhru 주문 생성을 비활성화합니다.",
   "settings_webhook_attempts": "최대 웹훅 시도 횟수",
   "settings_webhook_attempts_description": "최초 배송 시도가 포함됩니다.",
   "settings_webhook_timeout": "웹훅 시간 초과",

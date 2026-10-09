@@ -3,6 +3,7 @@ import {
 	defaultStreamHandler,
 } from "@tanstack/react-start/server";
 import { primeSessionLookup } from "#/features/auth/server/auth";
+import { handleDhruGatewayRequest } from "#/features/orders/server/dhru-api";
 import { handleLivenessRequest } from "#/features/status/server/health";
 import { applySecurityHeaders } from "#/server/http-security";
 import { validateRequestAuthority } from "#/server/middleware/authority";
@@ -40,11 +41,15 @@ export async function handleAppRequest(request: Request, env: RuntimeEnv) {
 			]),
 		);
 	const appStartedAt = performance.now();
-	const response = await withReadBookmarkCookie(
-		request,
-		await handleI18nRequest(request, env.DB, env.CACHE, appFetch),
-		env.DB,
-	);
+	const response =
+		(env.DB
+			? await handleDhruGatewayRequest(request, { DB: env.DB as D1Database })
+			: null) ??
+		(await withReadBookmarkCookie(
+			request,
+			await handleI18nRequest(request, env.DB, env.CACHE, appFetch),
+			env.DB,
+		));
 	return applySecurityHeaders(
 		request,
 		appendServerTiming(response, [

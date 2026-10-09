@@ -85,6 +85,12 @@ const fields: Record<
 			type: "origins",
 		},
 		{
+			key: "dhru.ipn_hosts",
+			label: m.settings_dhru_ipn_hosts(),
+			description: m.settings_dhru_ipn_hosts_description(),
+			type: "origins",
+		},
+		{
 			key: "webhooks.max_attempts",
 			label: m.settings_webhook_attempts(),
 			description: m.settings_webhook_attempts_description(),
@@ -277,7 +283,8 @@ function groupForSetting(key: SettingKey): SettingsGroup {
 		key === "payments.checkout_amount_decimals"
 	)
 		return "payment";
-	if (key === "security.allowed_hosts") return "access";
+	if (key === "security.allowed_hosts" || key === "dhru.ipn_hosts")
+		return "access";
 	if (key.startsWith("webhooks.")) return "webhook";
 	if (key === "runtime.better_auth_secret" || key === "runtime.better_auth_url")
 		return "auth";

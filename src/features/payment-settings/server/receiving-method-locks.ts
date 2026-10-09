@@ -28,7 +28,7 @@ export type PaymentAllocationInput = {
 		returnUrl?: string;
 		notifyUrl?: string;
 		apiKeyId?: string;
-		apiProtocol?: "gmpay" | "epay";
+		apiProtocol?: "gmpay" | "epay" | "dhru";
 		metadata?: Record<string, string>;
 	};
 	existingOrder?: {

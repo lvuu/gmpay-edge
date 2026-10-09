@@ -304,7 +304,7 @@ export async function recordPaymentTransaction(
 			blockNumber: transaction.blockNumber.toString(),
 		},
 	};
-	const selected = await matchingWebhookEndpoints(env.DB, orderId);
+	const selected = await matchingWebhookEndpoints(env.DB, orderId, eventType);
 	const deliveries = selected.map((endpoint) => ({
 		id: crypto.randomUUID(),
 		endpoint,

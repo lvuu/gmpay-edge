@@ -80,7 +80,7 @@ export async function expireOrder(
 		},
 		transaction: null,
 	};
-	const endpoints = await matchingWebhookEndpoints(env.DB, order.id);
+	const endpoints = await matchingWebhookEndpoints(env.DB, order.id, eventType);
 	const deliveries = endpoints.map((endpoint) => ({
 		id: crypto.randomUUID(),
 		endpoint,

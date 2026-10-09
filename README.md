@@ -421,6 +421,7 @@ deployer-owned infrastructure during production acceptance.
 | Deployment and production sign-off | [Deployment checklist](docs/en-US/DEPLOYMENT.md) |
 | Bun backup, restore, and Cloudflare import | [Bun data operations](docs/en-US/NODE_DATA_OPERATIONS.md) |
 | Merchant requests, signatures, errors, and EPay | [Merchant API](docs/en-US/MERCHANT_API.md) |
+| Dhru Fusion Pro Custom gateway | [Dhru Fusion Pro](docs/en-US/DHRU_FUSION_PRO.md) |
 | Provider configuration and receiving methods | [Payment methods](docs/en-US/PAYMENT_METHODS.md) |
 | Inbound endpoints and merchant delivery | [Webhooks](docs/en-US/WEBHOOKS.md) |
 | Bots, Inline orders, commands, and subscriptions | [Telegram](docs/en-US/TELEGRAM.md) |

@@ -393,6 +393,8 @@
   "settings_checkout_amount_decimals_description": "2～8桁、既定値は4桁です。支払額を切り上げ、金額の競合にも同じ表示単位を使用します",
   "settings_allowed_hosts": "許可されたホスト",
   "settings_allowed_hosts_description": "このインスタンスによって受け入れられるデプロイメントおよびカスタム ホスト。 http://、https://、またはパスを付けずに、1 行に 1 つのホストを入力します。ポートはオプションです",
+  "settings_dhru_ipn_hosts": "Dhru コールバックホスト",
+  "settings_dhru_ipn_hosts_description": "支払い通知を許可する Dhru Fusion ストアの正確な公開ホスト名を 1 行に 1 つ入力します。スキーム、ポート、パスは不要です。空欄では Dhru 注文の作成を無効にします。",
   "settings_webhook_attempts": "Webhook 試行の最大数",
   "settings_webhook_attempts_description": "最初の配信試行を含む",
   "settings_webhook_timeout": "Webhook タイムアウト",

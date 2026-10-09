@@ -21,14 +21,18 @@ export type PaymentRuntime = Pick<Env, "DB" | "WEBHOOK_QUEUE"> & {
 export async function matchingWebhookEndpoints(
 	db: D1Database,
 	orderId: string,
+	eventType: string,
 ) {
 	const endpoint = await db
 		.prepare(
 			`SELECT o.id, o.notify_url AS url, k.id AS api_key_id, k.secret_encrypted
 		 FROM orders o JOIN api_keys k ON k.id = o.api_key_id
-		 WHERE o.id = ? AND o.notify_url IS NOT NULL LIMIT 1`,
+		 WHERE o.id = ? AND o.notify_url IS NOT NULL
+			 AND (o.api_protocol IS NULL OR o.api_protocol != 'dhru'
+			      OR ? IN ('order.paid', 'order.overpaid'))
+		 LIMIT 1`,
 		)
-		.bind(orderId)
+		.bind(orderId, eventType)
 		.first<WebhookEndpoint>();
 	return endpoint ? [endpoint] : [];
 }

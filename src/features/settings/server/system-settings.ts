@@ -51,6 +51,16 @@ const definitions = {
 		)
 		.max(100)
 		.transform((hosts) => [...new Set(hosts)]),
+	"dhru.ipn_hosts": z
+		.array(
+			z
+				.string()
+				.trim()
+				.toLowerCase()
+				.regex(/^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/),
+		)
+		.max(20)
+		.transform((hosts) => [...new Set(hosts)]),
 	"webhooks.max_attempts": z.number().int().min(1).max(20),
 	"webhooks.timeout_ms": z.number().int().min(1_000).max(30_000),
 	"payments.scan_batch_size": z.number().int().min(1).max(100),
@@ -93,6 +103,7 @@ const defaults: Record<SettingKey, SettingValue> = {
 	"payments.late_payment_policy": "review",
 	"payments.checkout_amount_decimals": defaultCheckoutAmountDecimals,
 	"security.allowed_hosts": [],
+	"dhru.ipn_hosts": [],
 	"webhooks.max_attempts": 8,
 	"webhooks.timeout_ms": 10_000,
 	"payments.scan_batch_size": 100,

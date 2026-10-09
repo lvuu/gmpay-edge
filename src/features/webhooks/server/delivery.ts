@@ -27,12 +27,19 @@ export async function deliverWebhook(
 	timeoutMs = 10_000,
 ): Promise<WebhookDeliveryResult> {
 	const bodyParameters =
-		message.protocol === "gmpay"
+		message.protocol === "dhru"
 			? {
-					...message.gmpay,
-					signature: signGmpayParameters(message.gmpay, message.secret),
+					event: {
+						type: "charge:confirmed",
+						data: { order_id: message.dhruOrderId },
+					},
 				}
-			: message.payload;
+			: message.protocol === "gmpay"
+				? {
+						...message.gmpay,
+						signature: signGmpayParameters(message.gmpay, message.secret),
+					}
+				: message.payload;
 	const body = JSON.stringify(bodyParameters);
 	const epay =
 		message.protocol === "epay"
@@ -62,7 +69,10 @@ export async function deliverWebhook(
 				method: "POST",
 				url: message.url,
 				headers,
-				body: { ...bodyParameters, signature: "[REDACTED]" },
+				body:
+					message.protocol === "dhru"
+						? bodyParameters
+						: { ...bodyParameters, signature: "[REDACTED]" },
 				query: null,
 			};
 	try {
@@ -77,9 +87,10 @@ export async function deliverWebhook(
 		const excerpt = await readResponseExcerpt(response, 512);
 		const acknowledgement = excerpt.trim().toLowerCase();
 		const success =
-			response.status === 200 &&
-			(acknowledgement === "ok" ||
-				(message.protocol === "epay" && acknowledgement === "success"));
+			(message.protocol === "dhru" && response.ok) ||
+			(response.status === 200 &&
+				(acknowledgement === "ok" ||
+					(message.protocol === "epay" && acknowledgement === "success")));
 		const retryAfterMs = parseRetryAfter(response.headers.get("retry-after"));
 		return {
 			success,
