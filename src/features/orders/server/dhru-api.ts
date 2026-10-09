@@ -22,13 +22,21 @@ const httpsUrl = z
 	.url()
 	.max(2_048)
 	.refine((value) => new URL(value).protocol === "https:");
+// Dhru's PGDK accepts amount as a JSON string, int, or float and custom_id as
+// a string or int (Fusion's PHP client sends both as JSON numbers).
+const dhruAmountSchema = z
+	.union([orderAmountSchema, z.number().finite().positive().transform(String)])
+	.pipe(orderAmountSchema);
+const dhruCustomIdSchema = z
+	.union([z.string(), z.number().int().transform(String)])
+	.pipe(z.string().min(1).max(128));
 const createSchema = z.object({
-	amount: orderAmountSchema,
+	amount: dhruAmountSchema,
 	currency_code: z.string().trim().toUpperCase().refine(isFiatCurrencyCode),
 	description: z.string().min(1).max(500),
 	customer_name: z.string().min(1).max(200),
 	customer_email: z.email().max(320),
-	custom_id: z.string().min(1).max(128),
+	custom_id: dhruCustomIdSchema,
 	ipn_url: httpsUrl,
 	success_url: httpsUrl,
 	fail_url: httpsUrl,

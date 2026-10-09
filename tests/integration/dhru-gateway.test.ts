@@ -114,6 +114,43 @@ describe("Dhru Fusion gateway", () => {
 		expect(await isAllowedDhruIpnUrl(db, ipnUrl)).toBe(true);
 	});
 
+	it("accepts numeric amount and custom_id sent by Fusion's PHP client", async () => {
+		async function createRaw(payload: unknown) {
+			const response = await handleDhruGatewayRequest(
+				new Request("https://pay.example/?action=create_order", {
+					method: "POST",
+					headers: {
+						"content-type": "application/json",
+						"x-api-key": key,
+					},
+					body: JSON.stringify(payload),
+				}),
+				{ DB: db },
+			);
+			if (!response) throw new Error("Dhru root route was not handled");
+			return response;
+		}
+		const numeric = { ...base, amount: 25.0, custom_id: 2049 };
+		const first = await createRaw(numeric);
+		expect(first.status).toBe(200);
+		const firstBody = (await first.json()) as {
+			data: { order_id: number };
+		};
+		// A replay of the same numeric payload resolves to the same order.
+		const replay = await createRaw(numeric);
+		expect(
+			((await replay.json()) as { data: { order_id: number } }).data.order_id,
+		).toBe(firstBody.data.order_id);
+		// Float amounts stay precision-checked against the currency.
+		expect(
+			(await createRaw({ ...numeric, amount: 1.001, custom_id: 2050 })).status,
+		).toBe(400);
+		// Zero and negative numeric amounts are still rejected.
+		expect(
+			(await createRaw({ ...numeric, amount: 0, custom_id: 2051 })).status,
+		).toBe(400);
+	});
+
 	it("creates one checkout, rejects conflicting replay, and keeps pending unpaid", async () => {
 		const first = await create();
 		expect(first.status).toBe(200);
